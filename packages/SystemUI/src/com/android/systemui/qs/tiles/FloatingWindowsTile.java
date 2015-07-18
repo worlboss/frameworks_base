@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 CyanideL
+ * Copyright (C) 2015 AICP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,13 +37,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SlimFloatsTile extends QSTile<QSTile.BooleanState> {
+public class FloatingWindowsTile extends QSTile<QSTile.BooleanState> {
     private boolean mListening;
-    private SlimFloatsObserver mObserver;
+    private FloatingWindowsObserver mObserver;
 
-    public SlimFloatsTile(Host host) {
+    public FloatingWindowsTile(Host host) {
         super(host);
-        mObserver = new SlimFloatsObserver(mHandler);
+        mObserver = new FloatingWindowsObserver(mHandler);
     }
 
     @Override
@@ -57,31 +57,43 @@ public class SlimFloatsTile extends QSTile<QSTile.BooleanState> {
         refreshState();
     }
 
+     @Override
+    protected void handleSecondaryClick() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$FloatingWindowsSettingsActivity");
+        mHost.startSettingsActivity(intent);
+    }
+
     @Override
     public void handleLongClick() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$FloatingWindowsSettingsActivity");
+        mHost.startSettingsActivity(intent);
     }
 
  protected void toggleState() {
          Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.SLIM_ACTION_FLOATS, !SlimFloatsEnabled() ? 1 : 0);
+                        Settings.System.FLOATING_WINDOW_MODE, !FloatingWindowsEnabled() ? 1 : 0);
     }
 
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.visible = true;
-	if (SlimFloatsEnabled()) {
+	if (FloatingWindowsEnabled()) {
         state.icon = ResourceIcon.get(R.drawable.ic_qs_floating_on);
-        state.label = mContext.getString(R.string.quick_settings_slim_floats_on);
+        state.label = mContext.getString(R.string.quick_settings_floating_windows_on);
 	} else {
         state.icon = ResourceIcon.get(R.drawable.ic_qs_floating_off);
-		state.label = mContext.getString(R.string.quick_settings_slim_floats_off);
+		state.label = mContext.getString(R.string.quick_settings_floating_windows_off);
 	    }
 	}
 
-    private boolean SlimFloatsEnabled() {
+    private boolean FloatingWindowsEnabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SLIM_ACTION_FLOATS, 1) == 1;
+                Settings.System.FLOATING_WINDOW_MODE, 1) == 1;
     }
 
     @Override
@@ -95,8 +107,8 @@ public class SlimFloatsTile extends QSTile<QSTile.BooleanState> {
         }
     }
 
-    private class SlimFloatsObserver extends ContentObserver {
-        public SlimFloatsObserver(Handler handler) {
+    private class FloatingWindowsObserver extends ContentObserver {
+        public FloatingWindowsObserver(Handler handler) {
             super(handler);
         }
 
@@ -107,7 +119,7 @@ public class SlimFloatsTile extends QSTile<QSTile.BooleanState> {
 
         public void startObserving() {
             mContext.getContentResolver().registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.SLIM_ACTION_FLOATS),
+                    Settings.System.getUriFor(Settings.System.FLOATING_WINDOW_MODE),
                     false, this);
         }
 

@@ -73,7 +73,7 @@ import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.ScreenrecordTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.SyncTile;
-import com.android.systemui.qs.tiles.SlimFloatsTile;
+import com.android.systemui.qs.tiles.FloatingWindowsTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.SlimPieTile;
 import com.android.systemui.settings.CurrentUserTracker;
@@ -403,14 +403,14 @@ public class QSTileHost implements QSTile.Host {
                 return new SlimActionTile(this);
             case QSConstants.TILE_SLIMPIE:
                 return new SlimPieTile(this);
+            case QSConstants.TILE_FLOATING_WINDOWS:
+                return new FloatingWindowsTile(this);
             case QSConstants.TILE_MUSIC:
                 return new MusicTile(this);
             case QSConstants.TILE_HEADS_UP:
                 return new HeadsUpTile(this);
             case QSConstants.TILE_SYSTEMUI_RESTART:
                 return new SystemUIRestartTile(this);
-            case QSConstants.TILE_SLIM_FLOATS:
-                return new SlimFloatsTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
