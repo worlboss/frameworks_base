@@ -133,6 +133,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     private OnVerticalChangedListener mOnVerticalChangedListener;
     private boolean mIsLayoutRtl;
     private boolean mDelegateIntercepted;
+    private boolean mDimNavButtonsTouchAnywhere;
 
     private SettingsObserver mSettingsObserver;
     private boolean mShowDpadArrowKeys;
@@ -291,6 +292,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         initDownStates(event);
+        if (mDimNavButtonsTouchAnywhere) {
+            onNavButtonTouched();
+        }
         if (!mDelegateIntercepted && mTaskSwitchHelper.onTouchEvent(event)) {
             return true;
         }
@@ -949,6 +953,8 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_MENU_ARROW_KEYS),
                     false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DIM_NAV_BUTTONS_TOUCH_ANYWHERE), false, this);
 
             // intialize mModlockDisabled
             onChange(false);
@@ -960,6 +966,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         @Override
         public void onChange(boolean selfChange) {
+            mDimNavButtonsTouchAnywhere = (Settings.System.getIntForUser(resolver,
+                    Settings.System.DIM_NAV_BUTTONS_TOUCH_ANYWHERE, 0,
+                    UserHandle.USER_CURRENT) == 1);
             mShowDpadArrowKeys = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.NAVIGATION_BAR_MENU_ARROW_KEYS, 0) != 0;
             // reset saved side button visibilities
